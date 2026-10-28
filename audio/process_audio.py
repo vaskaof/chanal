@@ -2,9 +2,10 @@
 """Нарезка и обработка озвучки «Кнопки».
 
 Источники (audio/raw/):
-  take-A  — полный прогон, блоки 1–5 берём отсюда (чище и ровнее по темпу, «бот проверит»);
-  take-B  — второй полный прогон, дубли блоков 1–5 кладём в audio/alt/;
-  take-C  — перезаписанный финал.
+  take-A, take-B — первые полные прогоны; take-C — первый перезаписанный финал;
+  take-D  — третий полный прогон (здесь появилось «В приложении»);
+  take-E  — два дубля финала подряд (E1 — основной: «заполните», «ваш канал»).
+  Альтернативные дубли блоков — в audio/alt/.
 
 Цепочка на блок: вырезка с запасом → сокращение длинных пауз (кроссфейд) →
 HPF 80 Гц → шумодав → EQ (минус «бубнёж» 250 Гц, плюс разборчивость 3–4 кГц) →
@@ -16,24 +17,35 @@ import json, os, subprocess, numpy as np
 ROOT = os.path.dirname(os.path.abspath(__file__))
 RAW = os.path.join(ROOT, "raw")
 SR = 48000
-TAKES = {"A": "take-A-1793208292245.m4a", "B": "take-B-1793208487779.m4a", "C": "take-C-1793208584380.m4a"}
+TAKES = {"A": "take-A-1793208292245.m4a", "B": "take-B-1793208487779.m4a", "C": "take-C-1793208584380.m4a",
+         "D": "take-D-1793211481739.m4a", "E": "take-E-1793211576134.m4a"}
 
-# (имя, дубль, начало, конец) — границы речи по silencedetect −42 дБ, с запасом
+# (имя, [(дубль, начало, конец), ...], темп) — границы по silencedetect −42 дБ, с запасом.
+# Несколько кусков в блоке склеиваются через паузу GAP (громкость кусков выравнивается до склейки).
 BLOCKS = [
-    ("01-hook",     "A",  0.78,  5.56, 1.00),
-    ("02-bron",     "A",  5.93, 14.80, 1.00),
-    ("03-oplata",   "A", 15.94, 31.30, 1.04),
-    ("04-statusy",  "A", 33.68, 42.08, 1.00),
-    ("05-zashchita","A", 42.73, 48.78, 1.00),
-    ("06-final",    "C",  0.65, 17.62, 1.08),
+    ("01-hook",      [("A",  0.70,  5.56)], 1.00),
+    ("02-bron",      [("D",  6.50, 10.45), ("A", 9.55, 14.80)], 1.00),  # «В приложении» есть только в D; начало с 6.50 — иначе срезается тихое «в»
+    ("03-oplata",    [("A", 15.85, 31.30)], 1.04),
+    ("04-statusy",   [("A", 33.60, 42.08)], 1.00),
+    ("05-zashchita", [("A", 42.65, 48.78)], 1.00),
+    ("06-final",     [("E",  0.75, 18.15)], 1.08),
 ]
 ALT = [
-    ("01-hook",     "B",  0.00,  5.85, 1.00),
-    ("02-bron",     "B",  6.62, 15.85, 1.00),
-    ("03-oplata",   "B", 16.76, 32.70, 1.04),
-    ("04-statusy",  "B", 33.58, 42.35, 1.00),
-    ("05-zashchita","B", 43.22, 49.05, 1.00),
+    ("01-hook-B",      [("B",  0.00,  5.85)], 1.00),
+    ("01-hook-D",      [("D",  0.80,  6.15)], 1.00),
+    ("02-bron-B",      [("B",  6.55, 15.85)], 1.00),
+    ("02-bron-D",      [("D",  6.50, 16.55)], 1.00),
+    ("03-oplata-B",    [("B", 16.76, 32.70)], 1.04),
+    ("03-oplata-D",    [("D", 17.20, 33.70)], 1.08),
+    ("04-statusy-B",   [("B", 33.58, 42.35)], 1.00),
+    ("04-statusy-D",   [("D", 34.37, 42.85)], 1.00),
+    ("05-zashchita-B", [("B", 43.22, 49.05)], 1.00),
+    ("05-zashchita-D", [("D", 43.47, 49.58)], 1.00),
+    ("06-final-C",     [("C",  0.65, 17.62)], 1.08),
+    ("06-final-D",     [("D", 50.18, 68.39)], 1.08),
+    ("06-final-E2",    [("E", 19.42, 38.10)], 1.08),
 ]
+GAP = 0.32
 
 MAX_PAUSE = 0.38   # паузы длиннее — ужимаем до этого значения
 XF = 0.015         # кроссфейд на склейке, с
@@ -89,9 +101,21 @@ def tighten(x, thr=-42.0):
     return y, removed
 
 
-def process(name, take, a, b, tempo, outdir):
-    x = load(os.path.join(RAW, TAKES[take]), a, b)
+def speech_rms(x):
+    db, h = env_db(x)
+    return np.sqrt(np.mean(x[:len(db) * h].reshape(len(db), h)[db > -35] ** 2))
+
+
+def process(name, parts, tempo, outdir):
+    segs = [load(os.path.join(RAW, TAKES[t]), a, b) for t, a, b in parts]
+    ref = speech_rms(segs[0])
+    gap = np.zeros(int(GAP * SR), np.float32)
+    x = segs[0]
+    for seg in segs[1:]:
+        x = np.concatenate([x, gap, seg * (ref / speech_rms(seg))])
     y, removed = tighten(x)
+    take = "+".join(t for t, _, _ in parts)
+    a, b = parts[0][1], parts[-1][2]
     pcm = y.astype(np.float32).tobytes()
     flt = CHAIN + (f",atempo={tempo}" if tempo != 1.0 else "")
     common = ["-f", "f32le", "-ar", str(SR), "-ac", "1", "-i", "-"]
@@ -107,7 +131,7 @@ def process(name, take, a, b, tempo, outdir):
                  "apad=pad_dur=0.12", "-c:a", "pcm_s24le", out], pcm)
     dur = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", out],
                                capture_output=True, text=True).stdout)
-    return {"block": name, "take": take, "src": [a, b], "src_dur": round(b - a, 2),
+    return {"block": name, "take": take, "src": parts, "src_dur": round(sum(q - p for _, p, q in parts), 2),
             "pauses_cut": round(removed, 2), "tempo": tempo, "dur": round(dur, 2)}
 
 

@@ -1,0 +1,138 @@
+{
+ "main": [
+  {
+   "block": "01-hook",
+   "take": "A",
+   "src": [
+    0.78,
+    5.56
+   ],
+   "src_dur": 4.78,
+   "pauses_cut": 0.0,
+   "tempo": 1.0,
+   "dur": 4.9
+  },
+  {
+   "block": "02-bron",
+   "take": "A",
+   "src": [
+    5.93,
+    14.8
+   ],
+   "src_dur": 8.87,
+   "pauses_cut": 0.14,
+   "tempo": 1.0,
+   "dur": 8.85
+  },
+  {
+   "block": "03-oplata",
+   "take": "A",
+   "src": [
+    15.94,
+    31.3
+   ],
+   "src_dur": 15.36,
+   "pauses_cut": 0.37,
+   "tempo": 1.04,
+   "dur": 14.54
+  },
+  {
+   "block": "04-statusy",
+   "take": "A",
+   "src": [
+    33.68,
+    42.08
+   ],
+   "src_dur": 8.4,
+   "pauses_cut": 0.15,
+   "tempo": 1.0,
+   "dur": 8.37
+  },
+  {
+   "block": "05-zashchita",
+   "take": "A",
+   "src": [
+    42.73,
+    48.78
+   ],
+   "src_dur": 6.05,
+   "pauses_cut": 0.0,
+   "tempo": 1.0,
+   "dur": 6.17
+  },
+  {
+   "block": "06-final",
+   "take": "C",
+   "src": [
+    0.65,
+    17.62
+   ],
+   "src_dur": 16.97,
+   "pauses_cut": 0.43,
+   "tempo": 1.08,
+   "dur": 15.44
+  }
+ ],
+ "alt": [
+  {
+   "block": "01-hook",
+   "take": "B",
+   "src": [
+    0.0,
+    5.85
+   ],
+   "src_dur": 5.85,
+   "pauses_cut": 0.0,
+   "tempo": 1.0,
+   "dur": 5.97
+  },
+  {
+   "block": "02-bron",
+   "take": "B",
+   "src": [
+    6.62,
+    15.85
+   ],
+   "src_dur": 9.23,
+   "pauses_cut": 0.39,
+   "tempo": 1.0,
+   "dur": 8.96
+  },
+  {
+   "block": "03-oplata",
+   "take": "B",
+   "src": [
+    16.76,
+    32.7
+   ],
+   "src_dur": 15.94,
+   "pauses_cut": 1.19,
+   "tempo": 1.04,
+   "dur": 14.31
+  },
+  {
+   "block": "04-statusy",
+   "take": "B",
+   "src": [
+    33.58,
+    42.35
+   ],
+   "src_dur": 8.77,
+   "pauses_cut": 0.24,
+   "tempo": 1.0,
+   "dur": 8.65
+  },
+  {
+   "block": "05-zashchita",
+   "take": "B",
+   "src": [
+    43.22,
+    49.05
+   ],
+   "src_dur": 5.83,
+   "pauses_cut": 0.0,
+   "tempo": 1.0,
+   "dur": 5.95
+  }
+ ]
+}

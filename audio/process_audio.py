@@ -52,6 +52,15 @@ ALT = [
 ]
 GAP = 0.32
 
+# Точечное усиление слабых звуков: (дубль, начало, конец, дБ), время — по исходному дублю.
+BOOST = []
+
+# Вырезанные запинки: (дубль, начало, конец, сколько тишины оставить), время по исходному дублю.
+CUTS = [
+    ("A", 38.560, 38.865, 0.10),   # «видят, м-м где» — носовое «м/э» 0.3 с перед «где»
+    ("A", 47.530, 47.690, 0.00),   # «подскажет-э, что» — звонкий хвостик с гудением
+]
+
 MAX_PAUSE = 0.38   # паузы длиннее — ужимаем до этого значения
 XF = 0.015         # кроссфейд на склейке, с
 
@@ -64,8 +73,13 @@ LTASS = [-24, -19, -8, -5, -6, -4.4, -3, -2.6, -0.2, 0, -3, -7, -9.8, -11.2, -12
 MATCH, GMIN, GMAX = 0.75, -6.0, 8.0
 
 PRE = "highpass=f=75:p=2"
+# Динамика. Вход заранее приведён к −20 dBFS по речи (SPEECH_DB), поэтому пороги стабильны.
+# Плотная компрессия нужна: без неё тонут тихие начала слов («В приложении», «бот», «клиент»).
+# Но она же вытягивает хвосты слов и эхо в паузах («подвисания») — их глушит duck_pauses
+# после цепочки, только в настоящих паузах. Экспандер (agate) не годится: съедал «кли-» в «клиент».
+SPEECH_DB = -20.0
 POST = ("deesser=i=0.35:m=0.5:f=0.5,"
-        "acompressor=threshold=-24dB:ratio=2.5:attack=8:release=120:knee=4:makeup=2,"
+        "acompressor=threshold=-24dB:ratio=2.5:attack=8:release=90:knee=4:makeup=2,"
         "aexciter=amount=0.5:drive=4:blend=0:freq=7500:ceil=16000,"
         "acompressor=threshold=-10dB:ratio=6:attack=1:release=40")
 CHAIN = None   # собирается в main() после замера спектра
@@ -142,24 +156,80 @@ def speech_rms(x):
     return np.sqrt(np.mean(x[:len(db) * h].reshape(len(db), h)[db > -35] ** 2))
 
 
+def boosted(t, a, b):
+    x = load(src(t), a, b)
+    xf = int(0.01 * SR)
+    for ct, p, q, keep in sorted(CUTS, key=lambda c: -c[1]):
+        if ct != t or p < a or q > b:
+            continue
+        i, j = int((p - a) * SR), int((q - a) * SR)
+        ramp = np.linspace(1, 0, xf, dtype=np.float32)
+        head = x[:i + xf].copy(); head[-xf:] *= ramp
+        tail = x[j - xf:].copy(); tail[:xf] *= ramp[::-1]
+        mid = np.zeros(int(keep * SR), np.float32)
+        x = np.concatenate([head, mid, tail]) if keep else np.concatenate([head[:-xf], head[-xf:] + tail[:xf], tail[xf:]])
+    for bt, p, q, db in BOOST:
+        if bt != t or q <= a or p >= b:
+            continue
+        g = np.ones(len(x), np.float32)
+        i, j = int((p - a) * SR), int((q - a) * SR)
+        r = int(0.015 * SR)
+        env = np.ones(j - i, np.float32) * 10 ** (db / 20)
+        env[:r] = np.linspace(1, env[0], r); env[-r:] = np.linspace(env[0], 1, r)
+        g[max(i, 0):j] = env[max(0, -i):j - i]
+        x = x * g
+    return x
+
+
 def assemble(parts):
-    segs = [load(src(t), a, b) for t, a, b in parts]
+    segs = [boosted(t, a, b) for t, a, b in parts]
     ref = speech_rms(segs[0])
     gap = np.zeros(int(GAP * SR), np.float32)
     x = segs[0]
     for seg in segs[1:]:
         x = np.concatenate([x, gap, seg * (ref / speech_rms(seg))])
-    return tighten(x)
+    y, removed = tighten(x)
+    return y * (10 ** (SPEECH_DB / 20) / speech_rms(y)), removed
+
+
+DUCK_DB, DUCK_THR, DUCK_MIN, DUCK_PRE = -14.0, -38.0, 0.08, 0.09   # на сколько глушить, порог от пика речи, мин. длина паузы
+
+
+def duck_pauses(y):
+    """Приглушает паузы на DUCK_DB. Спад начинается через 15 мс после конца звука, подъём
+    заканчивается за DUCK_PRE до начала следующего (тихие взрывные «к», «б») — окончания и начала слов не трогаются."""
+    db, h = env_db(y, 0.005)
+    db -= np.percentile(db, 95)
+    quiet = db < DUCK_THR
+    g = np.ones(len(y), np.float32)
+    lo, ramp, pad = 10 ** (DUCK_DB / 20), int(0.02 * SR), int(0.015 * SR)
+    i = 0
+    while i < len(quiet):
+        if quiet[i]:
+            j = i
+            while j < len(quiet) and quiet[j]:
+                j += 1
+            a, b = i * h + pad, j * h - int(DUCK_PRE * SR)
+            if (j - i) * h / SR >= DUCK_MIN and b - a > 2 * ramp:
+                g[a:b] = lo
+                g[a:a + ramp] = np.linspace(1, lo, ramp)
+                g[b - ramp:b] = np.linspace(lo, 1, ramp)
+            i = j
+        else:
+            i += 1
+    return y * g
 
 
 def process(name, parts, tempo, outdir):
     y, removed = assemble(parts)
     take = "+".join(t for t, _, _ in parts)
     a, b = parts[0][1], parts[-1][2]
-    pcm = y.astype(np.float32).tobytes()
     flt = CHAIN + (f",atempo={tempo}" if tempo != 1.0 else "")
     common = ["-f", "f32le", "-ar", str(SR), "-ac", "1", "-i", "-"]
-    # проход 1: замер громкости после цепочки
+    y = np.frombuffer(ff(common + ["-af", flt, "-f", "f32le", "-"], y.astype(np.float32).tobytes()), np.float32)
+    pcm = duck_pauses(y).astype(np.float32).tobytes()
+    flt = "anull"
+    # замер громкости после цепочки
     meas = subprocess.run(["ffmpeg", "-v", "info", "-y"] + common +
                           ["-af", flt + ",loudnorm=I=-16:TP=-1.5:LRA=7:print_format=json", "-f", "null", "-"],
                           input=pcm, capture_output=True).stderr.decode()

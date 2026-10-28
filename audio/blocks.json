@@ -61,9 +61,9 @@
     ]
    ],
    "src_dur": 8.48,
-   "pauses_cut": 0.14,
+   "pauses_cut": 0.15,
    "tempo": 1.0,
-   "dur": 8.56
+   "dur": 8.37
   },
   {
    "block": "05-zashchita",
@@ -78,7 +78,7 @@
    "src_dur": 6.13,
    "pauses_cut": 0.0,
    "tempo": 1.0,
-   "dur": 6.35
+   "dur": 6.2
   },
   {
    "block": "06-final",
@@ -265,7 +265,7 @@
    "src_dur": 17.4,
    "pauses_cut": 0.58,
    "tempo": 1.08,
-   "dur": 15.78
+   "dur": 15.79
   },
   {
    "block": "06-final-C",

@@ -16,6 +16,7 @@ import json, os, subprocess, numpy as np
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 RAW = os.path.join(ROOT, "raw")
+ENH = os.path.join(ROOT, "work")   # дубли после нейросетевой очистки (audio/enhance.py), если есть
 SR = 48000
 TAKES = {"A": "take-A-1793208292245.m4a", "B": "take-B-1793208487779.m4a", "C": "take-C-1793208584380.m4a",
          "D": "take-D-1793211481739.m4a", "E": "take-E-1793211576134.m4a"}
@@ -28,7 +29,10 @@ BLOCKS = [
     ("03-oplata",    [("A", 15.85, 31.30)], 1.04),
     ("04-statusy",   [("A", 33.60, 42.08)], 1.00),
     ("05-zashchita", [("A", 42.65, 48.78)], 1.00),
-    ("06-final",     [("E",  0.75, 18.15)], 1.08),
+    # финал сокращён: «Меня зовут Василий. Я разработал Кнопку.» (A, интонация точки) +
+    # «По ссылке… автоматизировать.» (E1). Выпала фраза «приложение, которое автоматизирует…»,
+    # которая во всех дублях звучала как «броню… работу заказами».
+    ("06-final",     [("A", 49.30, 52.50), ("E", 8.62, 18.15)], 1.04),
 ]
 ALT = [
     ("01-hook-B",      [("B",  0.00,  5.85)], 1.00),
@@ -41,6 +45,7 @@ ALT = [
     ("04-statusy-D",   [("D", 34.37, 42.85)], 1.00),
     ("05-zashchita-B", [("B", 43.22, 49.05)], 1.00),
     ("05-zashchita-D", [("D", 43.47, 49.58)], 1.00),
+    ("06-final-long-E1", [("E",  0.75, 18.15)], 1.08),
     ("06-final-C",     [("C",  0.65, 17.62)], 1.08),
     ("06-final-D",     [("D", 50.18, 68.39)], 1.08),
     ("06-final-E2",    [("E", 19.42, 38.10)], 1.08),
@@ -50,17 +55,48 @@ GAP = 0.32
 MAX_PAUSE = 0.38   # паузы длиннее — ужимаем до этого значения
 XF = 0.015         # кроссфейд на склейке, с
 
-CHAIN = ("highpass=f=80,"
-         "afftdn=nr=12:nf=-50:tn=1,"
-         "equalizer=f=250:t=q:w=1.0:g=-3,"
-         "equalizer=f=3500:t=q:w=0.9:g=3.5,"
-         "highshelf=f=8000:g=2,"
-         "deesser=i=0.4:m=0.5:f=0.5,"
-         "acompressor=threshold=-22dB:ratio=3:attack=5:release=90:makeup=2")
+# Подгонка тембра: усреднённый спектр голоса (1/3 окт.) тянем к эталонному спектру мужской речи
+# (LTASS, Byrne et al. 1994) на MATCH долю, усиление/ослабление ограничено.
+BANDS = [63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1000, 1250, 1600, 2000,
+         2500, 3150, 4000, 5000, 6300, 8000, 10000, 12500]
+LTASS = [-24, -19, -8, -5, -6, -4.4, -3, -2.6, -0.2, 0, -3, -7, -9.8, -11.2, -12.3, -15.2,
+         -16, -16.6, -17.7, -18.6, -19.6, -21.3, -21.9, -22.8]
+MATCH, GMIN, GMAX = 0.75, -6.0, 8.0
+
+PRE = "highpass=f=75:p=2"
+POST = ("deesser=i=0.35:m=0.5:f=0.5,"
+        "acompressor=threshold=-24dB:ratio=2.5:attack=8:release=120:knee=4:makeup=2,"
+        "aexciter=amount=0.5:drive=4:blend=0:freq=7500:ceil=16000,"
+        "acompressor=threshold=-10dB:ratio=6:attack=1:release=40")
+CHAIN = None   # собирается в main() после замера спектра
+
+
+def band_db(x):
+    n = 4096; fr = x[:len(x) // n * n].reshape(-1, n)
+    rms = np.sqrt((fr ** 2).mean(1)); fr = fr[rms > np.percentile(rms, 40)]
+    P = (np.abs(np.fft.rfft(fr * np.hanning(n), axis=1)) ** 2).mean(0); f = np.fft.rfftfreq(n, 1 / SR)
+    o = np.array([10 * np.log10(P[(f >= c / 2 ** (1 / 6)) & (f < c * 2 ** (1 / 6))].sum() + 1e-20) for c in BANDS])
+    return o - o[BANDS.index(500)]
+
+
+def match_eq(x, g0=None, y=None):
+    """Первый проход: x — сырой голос. Второй: g0 — прошлые усиления, y — голос после всей цепочки."""
+    g = MATCH * (np.array(LTASS) - band_db(x)) if g0 is None else g0 + MATCH * (np.array(LTASS) - band_db(y))
+    g = np.clip(g, GMIN, GMAX)
+    g[:4] = np.minimum(g[:4], 1.5)                    # низ почти не поднимаем — иначе бубнит
+    g = np.convolve(np.pad(g, 1, mode="edge"), [0.25, 0.5, 0.25], "valid")
+    g -= g[BANDS.index(500):BANDS.index(1250)].mean()  # середину не трогаем, громкость выровняет loudnorm
+    entries = ";".join(f"entry({c},{v:.1f})" for c, v in zip(BANDS, g))
+    return f"firequalizer=gain_entry='{entries}':delay=0.05:fixed=on", g
 
 
 def ff(args, data=None):
     return subprocess.run(["ffmpeg", "-v", "error", "-y"] + args, input=data, capture_output=True, check=True).stdout
+
+
+def src(take):
+    e = os.path.join(ENH, TAKES[take].replace(".m4a", ".wav"))
+    return e if os.path.exists(e) else os.path.join(RAW, TAKES[take])
 
 
 def load(path, a, b):
@@ -106,14 +142,18 @@ def speech_rms(x):
     return np.sqrt(np.mean(x[:len(db) * h].reshape(len(db), h)[db > -35] ** 2))
 
 
-def process(name, parts, tempo, outdir):
-    segs = [load(os.path.join(RAW, TAKES[t]), a, b) for t, a, b in parts]
+def assemble(parts):
+    segs = [load(src(t), a, b) for t, a, b in parts]
     ref = speech_rms(segs[0])
     gap = np.zeros(int(GAP * SR), np.float32)
     x = segs[0]
     for seg in segs[1:]:
         x = np.concatenate([x, gap, seg * (ref / speech_rms(seg))])
-    y, removed = tighten(x)
+    return tighten(x)
+
+
+def process(name, parts, tempo, outdir):
+    y, removed = assemble(parts)
     take = "+".join(t for t, _, _ in parts)
     a, b = parts[0][1], parts[-1][2]
     pcm = y.astype(np.float32).tobytes()
@@ -136,6 +176,15 @@ def process(name, parts, tempo, outdir):
 
 
 def main():
+    global CHAIN
+    voice = np.concatenate([assemble(p)[0] for _, p, _ in BLOCKS])
+    eq, g = match_eq(voice)
+    for _ in range(2):  # компрессор и де-эссер сдвигают баланс — доводим по результату цепочки
+        out = np.frombuffer(ff(["-f", "f32le", "-ar", str(SR), "-ac", "1", "-i", "-", "-af", PRE + "," + eq + "," + POST,
+                                "-f", "f32le", "-"], voice.astype(np.float32).tobytes()), np.float32)
+        eq, g = match_eq(voice, g, out)
+    CHAIN = PRE + "," + eq + "," + POST
+    print("EQ, дБ:", dict(zip(BANDS, np.round(g, 1))))
     os.makedirs(os.path.join(ROOT, "alt"), exist_ok=True)
     rep = {"main": [process(*blk, ROOT) for blk in BLOCKS],
            "alt": [process(*blk, os.path.join(ROOT, "alt")) for blk in ALT]}

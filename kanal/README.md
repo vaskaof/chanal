@@ -12,7 +12,7 @@ https://claude.ai/artifact/8Xb9wvotdGRn5CU5FxLSLL
 - `neruchnoy-dark.png` — основной аватар канала (640×640)
 - `neruchnoy-light.png` — светлый вариант
 - `neruchnoy-dark-text.png` — с надписью, для крупных размеров (сторис, обложки)
-- `neruchnoy-wordmark.png` — горизонтальный логотип для шапок и Kwork
+- `neruchnoy-wordmark.png` — горизонтальный логотип со слоганом для шапок и Kwork (текст слогана — `SLOGAN` в `build-logo.js`)
 - `preview-v2.png` — как смотрится в списке чатов (светлая/тёмная тема, мелкие размеры)
 
 Пересборка: `npm i @fontsource/unbounded @fontsource/manrope opentype.js playwright && node logo/build-logo.js logo`

@@ -5,9 +5,25 @@ const opentype = require('opentype.js');
 const { chromium } = require('playwright');
 
 const OUT = path.resolve(process.argv[2]);
+const SLOGAN = ['Заказы, оплаты и брони — в одном месте,', 'а не в комментариях и заметках'];
 const C = { ink: '#14202B', ink3: '#2F4456', paper: '#F6F4EF', or: '#FF6B3D', or2: '#C2441E', mutd: '#C9D1D9' };
 
-const font = opentype.parse(fs.readFileSync(require.resolve('@fontsource/unbounded/files/unbounded-cyrillic-800-normal.woff')).buffer);
+const load = f => opentype.parse(fs.readFileSync(require.resolve('@fontsource/' + f)).buffer);
+const font = load('unbounded/files/unbounded-cyrillic-800-normal.woff');
+// Manrope разбит на подмножества: кириллица и латиница (пробелы, знаки препинания)
+const body = [load('manrope/files/manrope-cyrillic-600-normal.woff'), load('manrope/files/manrope-latin-600-normal.woff')];
+
+// строка Manrope -> path, глиф берётся из подмножества, где он есть
+function bodyText(str, x, y, size) {
+  let d = '', cx = x;
+  for (const ch of str) {
+    const f = body.find(f => f.charToGlyphIndex(ch) > 0) || body[1];
+    const g = f.charToGlyph(ch);
+    d += g.getPath(cx, y, size).toPathData(2);
+    cx += g.advanceWidth * size / f.unitsPerEm;
+  }
+  return { d, w: cx - x };
+}
 
 // текст -> path, выравнивание: x слева, baseline y; возвращает {d, w}
 function text(str, x, y, size, anchor = 'start') {
@@ -49,14 +65,16 @@ ${toggle({ x: 146, y: 150, w: 220, h: 88, track: C.or, knob: C.paper, spark: C.o
 <path d="${a.d}" fill="${C.paper}"/><path d="${b.d}" fill="${C.or}"/></svg>`;
   })(),
 
-  // Горизонтальный логотип для обложек/шапок
+  // Горизонтальный логотип для обложек/шапок, со слоганом под названием
   'neruchnoy-wordmark': (() => {
-    const a = text('Неручной', 430, 300, 118), b = text('режим', 430, 440, 118);
-    const W = Math.ceil(430 + Math.max(a.w, b.w) + 110);
+    const a = text('Неручной', 430, 222, 118), b = text('режим', 430, 362, 118);
+    const s1 = bodyText(SLOGAN[0], 434, 452, 40), s2 = bodyText(SLOGAN[1], 434, 508, 40);
+    const W = Math.ceil(430 + Math.max(a.w, b.w, s1.w, s2.w) + 110);
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} 640">${glowDef}
 <rect width="${W}" height="640" fill="${C.ink}"/>
-${toggle({ x: 100, y: 262, w: 260, h: 104, track: C.or, knob: C.paper, spark: C.or, glow: true })}
-<path d="${a.d}" fill="${C.paper}"/><path d="${b.d}" fill="${C.or}"/></svg>`;
+${toggle({ x: 100, y: 268, w: 260, h: 104, track: C.or, knob: C.paper, spark: C.or, glow: true })}
+<path d="${a.d}" fill="${C.paper}"/><path d="${b.d}" fill="${C.or}"/>
+<path d="${s1.d}${s2.d}" fill="${C.mutd}"/></svg>`;
   })(),
 };
 

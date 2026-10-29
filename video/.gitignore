@@ -1,4 +1,2 @@
 node_modules/
-out/
-src/1-bron.mp4
-src/4-proverka-peresylka.mp4
+build/out/

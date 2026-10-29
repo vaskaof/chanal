@@ -46,9 +46,9 @@
     ]
    ],
    "src_dur": 15.45,
-   "pauses_cut": 0.42,
-   "tempo": 1.04,
-   "dur": 14.66
+   "pauses_cut": 0.03,
+   "tempo": 1.0,
+   "dur": 16.45
   },
   {
    "block": "04-statusy",
@@ -97,8 +97,8 @@
    ],
    "src_dur": 12.73,
    "pauses_cut": 0.65,
-   "tempo": 1.04,
-   "dur": 12.13
+   "tempo": 1.07,
+   "dur": 11.8
   }
  ],
  "alt": [
@@ -280,7 +280,7 @@
    "src_dur": 16.97,
    "pauses_cut": 0.47,
    "tempo": 1.08,
-   "dur": 15.49
+   "dur": 15.48
   },
   {
    "block": "06-final-D",
@@ -295,7 +295,7 @@
    "src_dur": 18.21,
    "pauses_cut": 0.87,
    "tempo": 1.08,
-   "dur": 16.27
+   "dur": 16.26
   },
   {
    "block": "06-final-E2",

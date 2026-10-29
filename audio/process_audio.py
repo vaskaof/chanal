@@ -26,13 +26,13 @@ TAKES = {"A": "take-A-1793208292245.m4a", "B": "take-B-1793208487779.m4a", "C": 
 BLOCKS = [
     ("01-hook",      [("A",  0.70,  5.56)], 1.00),
     ("02-bron",      [("D",  6.50, 10.45), ("A", 9.55, 14.80)], 1.00),  # «В приложении» есть только в D; начало с 6.50 — иначе срезается тихое «в»
-    ("03-oplata",    [("A", 15.85, 31.30)], 1.04),
+    ("03-oplata",    [("A", 15.85, 31.30)], 1.00),   # без ускорения + паузы между действиями (CUTS, PAUSE_FOR)
     ("04-statusy",   [("A", 33.60, 42.08)], 1.00),
     ("05-zashchita", [("A", 42.65, 48.78)], 1.00),
     # финал сокращён: «Меня зовут Василий. Я разработал Кнопку.» (A, интонация точки) +
     # «По ссылке… автоматизировать.» (E1). Выпала фраза «приложение, которое автоматизирует…»,
     # которая во всех дублях звучала как «броню… работу заказами».
-    ("06-final",     [("A", 49.30, 52.50), ("E", 8.62, 18.15)], 1.04),
+    ("06-final",     [("A", 49.30, 52.50), ("E", 8.62, 18.15)], 1.07),
 ]
 ALT = [
     ("01-hook-B",      [("B",  0.00,  5.85)], 1.00),
@@ -59,7 +59,13 @@ BOOST = []
 CUTS = [
     ("A", 38.560, 38.865, 0.10),   # «видят, м-м где» — носовое «м/э» 0.3 с перед «где»
     ("A", 47.530, 47.690, 0.00),   # «подскажет-э, что» — звонкий хвостик с гудением
+    # Оплата: на экране много действий подряд — даём им время (вставка тишины в существующую паузу)
+    ("A", 19.710, 19.715, 0.22),   # «…за вес. | Например»
+    ("A", 21.430, 21.435, 0.19),   # «…1 300. | Переводит» — смена экрана на форму оплаты
+    ("A", 23.720, 23.725, 0.17),   # «…чек, | вам приходит заявка» — переход к экрану менеджера
+    ("A", 29.080, 29.085, 0.17),   # «…сам. | Без поиска»
 ]
+PAUSE_FOR = {"03-oplata": 0.70}   # в этих блоках паузы ужимаются только сверх этого значения
 
 MAX_PAUSE = 0.38   # паузы длиннее — ужимаем до этого значения
 XF = 0.015         # кроссфейд на склейке, с
@@ -123,7 +129,8 @@ def env_db(x, hop=0.01):
     return 20 * np.log10(np.sqrt((x[:n * h].reshape(n, h) ** 2).mean(1)) + 1e-9), h
 
 
-def tighten(x, thr=-42.0):
+def tighten(x, thr=-42.0, max_pause=None):
+    max_pause = max_pause or MAX_PAUSE
     """Ужимает паузы длиннее MAX_PAUSE: вырезает середину паузы, склейка кроссфейдом."""
     db, h = env_db(x)
     quiet = db < thr
@@ -133,8 +140,8 @@ def tighten(x, thr=-42.0):
             j = i
             while j < len(quiet) and quiet[j]:
                 j += 1
-            if i > 0 and j < len(quiet) and (j - i) * h / SR > MAX_PAUSE:
-                keep = int(MAX_PAUSE * SR / 2)
+            if i > 0 and j < len(quiet) and (j - i) * h / SR > max_pause:
+                keep = int(max_pause * SR / 2)
                 cuts.append((i * h + keep, j * h - keep))
             i = j
         else:
@@ -181,14 +188,14 @@ def boosted(t, a, b):
     return x
 
 
-def assemble(parts):
+def assemble(parts, max_pause=None):
     segs = [boosted(t, a, b) for t, a, b in parts]
     ref = speech_rms(segs[0])
     gap = np.zeros(int(GAP * SR), np.float32)
     x = segs[0]
     for seg in segs[1:]:
         x = np.concatenate([x, gap, seg * (ref / speech_rms(seg))])
-    y, removed = tighten(x)
+    y, removed = tighten(x, max_pause=max_pause)
     return y * (10 ** (SPEECH_DB / 20) / speech_rms(y)), removed
 
 
@@ -221,7 +228,7 @@ def duck_pauses(y):
 
 
 def process(name, parts, tempo, outdir):
-    y, removed = assemble(parts)
+    y, removed = assemble(parts, PAUSE_FOR.get(name))
     take = "+".join(t for t, _, _ in parts)
     a, b = parts[0][1], parts[-1][2]
     flt = CHAIN + (f",atempo={tempo}" if tempo != 1.0 else "")

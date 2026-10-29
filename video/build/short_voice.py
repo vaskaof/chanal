@@ -6,9 +6,8 @@
 Субтитры по фразам озвучки, метка «Со звуком» первые 2 с.
 
 Источники экрана (video/src):
-  1-bron-clean.mp4, 4-proverka-peresylka-clean.mp4 — записи телефона, личные данные размыты (build/redact.py);
-  oplata-screen.mp4, statusy-screen.mp4 — экран телефона, вырезанный из прошлых сторис
-  (исходные записи video/cc в пакет не попали).
+  1-bron.mp4, 4-proverka-peresylka-clean.mp4 — записи телефона (в «проверке» размыт номер, build/redact.py);
+  cc/01-oplata…, cc/02-kollektivka… — записи приложения (оплата клиент + менеджер, этап коллективки).
 
 Запуск: python3 video/build/short_voice.py   (нужны ffmpeg, node + playwright, npm i в video/build)
 """
@@ -36,7 +35,7 @@ ACCENT_TX = "#FF6B3D"
 MUTED = "#C9D1D9"
 CARD = "#1E2C39"
 FPS = 30
-TAIL = 1.4                # финальная карточка держится после конца голоса
+TAIL = 0.85               # финальная карточка держится после конца голоса (ролик ≤ 60 с)
 
 # --- тайминг блоков озвучки (из audio/blocks.json: блоки подряд с паузой 0.35 с)
 GAP = 0.35
@@ -56,32 +55,32 @@ TOTAL = VOICE_END + TAIL
 SUBS = [
     (0.00, 1.75, "Чем больше у байера заказов —"),
     (1.82, 5.05, "тем больше времени уходит на&nbsp;переписки, оплаты и&nbsp;учёт"),
-    (5.50, 8.20, "В приложении клиент просто нажимает кнопку —"),
-    (8.20, 9.45, "и бронь за ним."),
+    (5.50, 8.24, "В приложении клиент просто нажимает кнопку —"),
+    (8.24, 9.45, "и бронь за ним."),
     (9.55, 11.40, "Мест нет — он в очереди."),
     (11.60, 13.25, "Вам не нужно разбирать комментарии"),
     (13.25, 15.00, "и выяснять, кто был первым."),
-    (15.24, 16.55, "Партия приехала —"),
-    (16.60, 18.95, "клиент сам видит, сколько доплатить за&nbsp;вес."),
-    (19.10, 20.50, "Например, 1&nbsp;300&nbsp;₽."),
-    (20.68, 22.70, "Переводит, прикрепляет чек —"),
-    (22.80, 24.25, "вам приходит заявка."),
-    (24.38, 25.85, "Проверили, подтвердили —"),
-    (25.85, 27.55, "и долг пересчитался сам."),
-    (27.70, 29.95, "Без поиска чеков по&nbsp;перепискам."),
-    (30.00, 32.25, "С коллективками та же история."),
-    (32.38, 33.90, "Обновили статус один раз —"),
-    (33.90, 36.25, "и все участники видят, где их заказ."),
-    (36.30, 38.85, "И никому не надо объяснять отдельно."),
-    (39.04, 41.90, "А если клиенту пишет мошенник от&nbsp;вашего имени —"),
-    (42.00, 43.30, "бот проверит аккаунт"),
-    (43.30, 45.40, "и подскажет, что это не вы."),
-    (45.72, 47.15, "Меня зовут Василий."),
-    (47.22, 48.62, "Я разработал «Кнопку»."),
-    (48.72, 51.40, "По ссылке можно посмотреть, как она работает."),
-    (51.56, 53.10, "А если заполните анкету —"),
-    (53.18, 54.75, "я бесплатно разберу ваш канал"),
-    (54.82, 57.60, "и покажу, что можно упростить и&nbsp;автоматизировать."),
+    (15.28, 16.60, "Партия приехала —"),
+    (16.66, 19.30, "клиент сам видит, сколько доплатить за&nbsp;вес."),
+    (19.45, 20.95, "Например, 1&nbsp;300&nbsp;₽."),
+    (21.40, 23.60, "Переводит, прикрепляет чек —"),
+    (23.80, 25.45, "вам приходит заявка."),
+    (25.70, 27.20, "Проверили, подтвердили —"),
+    (27.20, 28.90, "и долг пересчитался сам."),
+    (29.00, 31.70, "Без поиска чеков по&nbsp;перепискам."),
+    (31.80, 34.04, "С коллективками та же история."),
+    (34.17, 35.69, "Обновили статус один раз —"),
+    (35.69, 38.04, "и все участники видят, где их заказ."),
+    (38.09, 40.64, "И никому не надо объяснять отдельно."),
+    (40.83, 43.69, "А если клиенту пишет мошенник от&nbsp;вашего имени —"),
+    (43.79, 45.09, "бот проверит аккаунт"),
+    (45.09, 47.19, "и подскажет, что это не вы."),
+    (47.50, 48.80, "Меня зовут Василий."),
+    (48.90, 50.25, "Я разработал «Кнопку»."),
+    (50.38, 52.95, "По ссылке можно посмотреть, как она работает."),
+    (53.12, 54.65, "А если заполните анкету —"),
+    (54.72, 56.25, "я бесплатно разберу ваш канал"),
+    (56.30, 59.10, "и покажу, что можно упростить и&nbsp;автоматизировать."),
 ]
 
 # --- геометрия
@@ -96,11 +95,13 @@ FMT = {
 ROLE = {"L": "Ваш клиент", "R": "Вы"}
 
 SOURCES = {
-    "TB": "1-bron-clean.mp4",
+    "TB": "1-bron.mp4",
     "TP": "4-proverka-peresylka-clean.mp4",
-    "OP": "oplata-screen.mp4",
-    "ST": "statusy-screen.mp4",
+    "A1": "cc/01-oplata-klient-i-menedzher-1080x1920.mp4",
+    "A2": "cc/02-kollektivka-etap-1080x1920.mp4",
 }
+# записи приложения 1080×1920: экран телефона — полоса 888 px по центру
+PRECROP = {"A1": "crop=888:1858:96:31,", "A2": "crop=888:1858:96:31,"}
 
 
 def S(src, a, b, d, side="L"):
@@ -116,24 +117,27 @@ SCENES = [
         S("TB", 24.0, 28.6, None),      # «не нужно выяснять, кто был первым»: список броней в боте
     ]),
     dict(id="03-oplata", eb="02 · Оплата", title="Чек приходит заявкой — вы&nbsp;подтверждаете", segs=[
-        S("OP", 0.30, 1.70, 1.40),        # «Партия приехала»: «К оплате: 1 300 ₽»
-        S("OP", 2.00, 3.60, 3.40),        # «сколько доплатить за вес… например, 1 300» (после 3.7 уже окно оплаты)
-        S("OP", 4.30, 6.60, 2.40),        # «переводит, прикрепляет чек»
-        S("OP", 8.20, 9.60, 1.40, "R"),   # «вам приходит заявка»
-        S("OP", 9.80, 11.0, 1.20, "R"),   # «проверили»: чек 1 300 ₽
-        S("OP", 12.3, 13.6, 1.20, "R"),   # «подтвердили»
-        S("OP", 14.8, 16.6, 1.60, "R"),   # «долг пересчитался сам»: Соня 2 200 → 900 ₽
-        S("OP", 17.6, 19.4, None),        # «без поиска чеков»: у клиента «всё оплачено»
+        S("A1", 0.00, 1.60, 1.40),        # «Партия приехала»: «К оплате: 1 300 ₽», открывает заказ
+        S("A1", 2.00, 2.90, 1.00),        # «клиент сам видит…»: заказ, вес 0 / 1 300
+        S("A1", 3.70, 6.90, 3.30),        # «…сколько доплатить за вес. Например, 1 300»: «1 300 ₽ осталось»
+        S("A1", 9.60, 12.0, 2.20),        # «Переводит, прикрепляет чек»: сумма 1 300, чек
+        S("A1", 16.7, 17.4, 0.65),        # отправил
+        S("A1", 20.8, 23.0, 1.85, "R"),   # «вам приходит заявка»
+        S("A1", 24.0, 24.95, 0.80, "R"),  # «Проверили»: чек 1 300 ₽
+        S("A1", 29.0, 30.3, 1.10, "R"),   # «подтвердили»
+        S("A1", 34.2, 36.6, 2.10, "R"),   # «долг пересчитался сам»: Соня 2 200 → 900 ₽
+        S("A2", 2.80, 5.20, None),        # «без поиска чеков»: у клиента «всё оплачено»
     ]),
     dict(id="04-statusy", eb="03 · Коллективка", title="Один статус — видят все&nbsp;участники", segs=[
-        S("ST", 0.30, 1.30, 1.00),        # у клиента «Формируется»
-        S("ST", 3.30, 4.30, 1.00, "R"),   # коллективка на 5 заказов
-        S("ST", 7.40, 9.20, 1.80, "R"),   # «обновили статус один раз»
-        S("ST", 9.60, 10.6, 1.00, "R"),   # «Статус изменён у 5 заказов»
-        S("ST", 11.0, 14.8, None),        # «все видят, где их заказ»: «Едет в Россию»
+        S("A2", 3.00, 4.90, 1.90),        # «с коллективками та же история»: у клиента «Формируется»
+        S("A2", 7.70, 8.50, 0.70, "R"),   # коллективка на 5 заказов
+        S("A2", 14.6, 15.9, 1.10, "R"),   # «обновили статус»: «Отправлено (СДЭК)»
+        S("A2", 20.3, 21.4, 0.90, "R"),   # «один раз»: «будет установлен для 5 из 5 заказов»
+        S("A2", 21.8, 22.7, 0.80, "R"),   # «Статус изменён у 5 заказов»
+        S("A2", 26.0, 29.4, None),        # «все видят, где их заказ»: «Едет в Россию»
     ]),
     dict(id="05-zashchita", eb="04 · Проверка аккаунта", title="Бот сверяет аккаунт с&nbsp;официальным списком", segs=[
-        S("TP", 5.00, 7.60, 2.60),        # «пишет мошенник от вашего имени»
+        S("TP", 5.35, 7.60, 2.60),        # «пишет мошенник от вашего имени» (экран чата — с 5.3 с)
         S("TP", 1.00, 2.20, 1.20),        # «бот проверит аккаунт»: «Проверить продавца»
         S("TP", 9.40, 10.6, 1.20),        # пересылка → «Это ДРУГОЙ аккаунт»
         S("TP", 10.6, 14.6, None),        # «подскажет, что это не вы»
@@ -275,24 +279,24 @@ def outro_html(fmt, dur, phone):
     wcol = 960 if W else 940
     # фаза A: кто я (как слайд «Кто делает» в презентации)
     a = (f'<div style="position:absolute;left:{x0}px;top:{230 if W else 380}px;width:{wcol}px">'
-         f'<p data-in="0.05" data-out="2.95" style="opacity:0;font-size:26px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:{ACCENT_TX}">Кто делает</p>'
-         f'<p class="u" data-in="0.15" data-out="2.95" style="opacity:0;margin-top:30px;font-size:{100 if W else 88}px;font-weight:700;line-height:1.05">{AUTHOR}</p>'
-         f'<div data-in="1.65" data-out="2.95" style="opacity:0;margin-top:40px;display:flex;flex-direction:column;align-items:flex-start;gap:20px">'
+         f'<p data-in="0.05" data-out="2.9" style="opacity:0;font-size:26px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:{ACCENT_TX}">Кто делает</p>'
+         f'<p class="u" data-in="0.15" data-out="2.9" style="opacity:0;margin-top:30px;font-size:{100 if W else 88}px;font-weight:700;line-height:1.05">{AUTHOR}</p>'
+         f'<div data-in="1.55" data-out="2.9" style="opacity:0;margin-top:40px;display:flex;flex-direction:column;align-items:flex-start;gap:20px">'
          f'<p style="font-size:{44 if W else 42}px;font-weight:700;line-height:1.25;color:{MUTED}">Разработал</p>'
          f'<p style="background:{ACCENT};color:{BG};font-size:{56 if W else 54}px;font-weight:800;padding:26px 44px;border-radius:28px;'
          f'box-shadow:0 24px 60px rgba(255,107,61,.35)"><span class="u">{PRODUCT}</span></p></div></div>')
     # фаза B: демо по ссылке (телефон с записью — накладывается в ffmpeg)
     g = phone
     b = (f'<div style="position:absolute;left:{x0}px;top:{230 if W else 150}px;width:{780 if W else wcol}px">'
-         f'<p data-in="3.05" data-out="5.8" style="opacity:0;font-size:28px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:{ACCENT_TX}">Как это работает</p>'
-         f'<p class="u" data-in="3.15" data-out="5.8" style="opacity:0;margin-top:22px;font-size:{72 if W else 64}px;font-weight:800;line-height:1.1">Демо — по&nbsp;ссылке в&nbsp;посте</p>'
-         f'<p data-in="3.5" data-out="5.8" style="opacity:0;margin-top:28px;display:inline-block;background:{ACCENT};color:{BG};'
+         f'<p data-in="2.95" data-out="5.55" style="opacity:0;font-size:28px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:{ACCENT_TX}">Как это работает</p>'
+         f'<p class="u" data-in="3.05" data-out="5.55" style="opacity:0;margin-top:22px;font-size:{72 if W else 64}px;font-weight:800;line-height:1.1">Демо — по&nbsp;ссылке в&nbsp;посте</p>'
+         f'<p data-in="3.4" data-out="5.55" style="opacity:0;margin-top:28px;display:inline-block;background:{ACCENT};color:{BG};'
          f'font-size:{38 if W else 36}px;font-weight:800;padding:16px 30px;border-radius:22px">▶ Посмотрите глазами клиента</p></div>'
-         f'<div data-in="3.0" data-out="5.8" style="opacity:0;position:absolute;left:0;top:0">'
+         f'<div data-in="2.9" data-out="5.55" style="opacity:0;position:absolute;left:0;top:0">'
          f'{bezel(g["x"], g["y"], g["w"], g["h"], g["bz"], g["r"])}</div>')
     # фаза C: анкета → разбор
-    steps = [("6.0", "Заполните анкету — ссылка в&nbsp;посте"), ("7.6", "Бесплатно разберу ваш&nbsp;канал"),
-             ("9.3", "Покажу, что упростить и&nbsp;автоматизировать")]
+    steps = [("5.8", "Заполните анкету — ссылка в&nbsp;посте"), ("7.4", "Бесплатно разберу ваш&nbsp;канал"),
+             ("8.95", "Покажу, что упростить и&nbsp;автоматизировать")]
     # как слайд CTA в презентации: шаги с оранжевой чертой сверху
     if W:
         st = '<div style="display:flex;gap:28px;margin-top:40px">' + "".join(
@@ -307,9 +311,9 @@ def outro_html(fmt, dur, phone):
             f'<p style="font-size:42px;font-weight:700;line-height:1.3">{txt}</p></div>'
             for i, (t, txt) in enumerate(steps))
     c = (f'<div style="position:absolute;left:{x0}px;top:{150 if W else 330}px;width:{1700 if W else wcol}px">'
-         f'<p class="u" data-in="5.95" style="opacity:0;font-size:{64 if W else 60}px;font-weight:700;line-height:1.15">Бесплатный разбор вашего канала</p>'
+         f'<p class="u" data-in="5.7" style="opacity:0;font-size:{64 if W else 60}px;font-weight:700;line-height:1.15">Бесплатный разбор вашего канала</p>'
          f'{st}'
-         f'<div data-in="11.2" data-m="pop" style="opacity:0;margin-top:{48 if W else 70}px;display:flex;gap:28px;align-items:center;flex-wrap:wrap">'
+         f'<div data-in="10.4" data-m="pop" style="opacity:0;margin-top:{48 if W else 70}px;display:flex;gap:28px;align-items:center;flex-wrap:wrap">'
          f'<p style="background:{ACCENT};color:{BG};font-size:{38 if W else 36}px;font-weight:800;padding:24px 40px;border-radius:24px">Написать: {CONTACT}</p>'
          f'<p style="font-size:30px;font-weight:600;color:{MUTED}">Анкета и демо — ссылки в посте</p></div></div>')
     fadein = (f'<div id="fadein" style="position:absolute;inset:0;background:{BG};pointer-events:none"></div>'
@@ -349,7 +353,8 @@ def render_scene(sc, fmt):
 
     def vid(path, a, d):
         nonlocal idx
-        args.extend(["-ss", f"{a:.3f}", "-t", f"{d:.3f}", "-i", path]); idx += 1; return idx - 1
+        args.extend(["-i", path]); idx += 1; return idx - 1   # отрезок режет trim в фильтре: -ss перед -i
+                                                              # подмешивал кадры до точки входа
 
     tag = f"{sc['id']}_{fmt}"
     bg = img(ov(f"bg_{tag}", g["cw"], g["ch"], scene_bg(fmt, sc["eb"], sc["title"]), transparent=False))
@@ -357,7 +362,8 @@ def render_scene(sc, fmt):
     labels = []
     for j, s in enumerate(segs):
         i = vid(os.path.join(SRC, SOURCES[s["src"]]), s["a"], max(s["b"] - s["a"], 0.05))  # ровно [a, b], остаток — стоп-кадр
-        fc.append(f"[{i}:v]scale=-2:{g['SH']}:flags=lanczos,crop={g['SW']}:{g['SH']},setsar=1,fps={FPS},"
+        fc.append(f"[{i}:v]trim=start={s['a']:.3f}:duration={max(s['b'] - s['a'], 0.05):.3f},setpts=PTS-STARTPTS,"
+                  f"{PRECROP.get(s['src'], '')}scale=-2:{g['SH']}:flags=lanczos,crop={g['SW']}:{g['SH']},setsar=1,fps={FPS},"
                   f"setpts=(PTS-STARTPTS)/{s['sp']:.4f},tpad=stop_mode=clone:stop_duration={s['d']:.3f},"
                   f"trim=duration={s['d']:.3f},setpts=PTS-STARTPTS[s{j}]")
         labels.append(f"[s{j}]")
@@ -427,26 +433,29 @@ def main():
         # финал: в фазе «демо по ссылке» в рамке телефона идёт запись брони
         p = phone_box(fmt)
         mk = os.path.join(OUT, f"mask_final_{fmt}.png")
-        fc = (f"[1:v]scale=-2:{p['h']}:flags=lanczos,crop={p['w']}:{p['h']},setsar=1,fps={FPS},setpts=PTS-STARTPTS+3.0/TB,"
-              f"format=yuva420p,fade=t=in:st=3.0:d=0.35:alpha=1,fade=t=out:st=5.5:d=0.3:alpha=1[ph0];"
-              f"[ph0][2:v]alphamerge[ph];[0:v][ph]overlay={p['x']}:{p['y']}:eof_action=pass:{en(3.0, 5.85)}[out]")
+        fc = (f"[1:v]trim=start=0.15:duration=2.9,setpts=PTS-STARTPTS,scale=-2:{p['h']}:flags=lanczos,crop={p['w']}:{p['h']},setsar=1,fps={FPS},setpts=PTS-STARTPTS+2.9/TB,"
+              f"format=yuva420p,fade=t=in:st=2.9:d=0.35:alpha=1,fade=t=out:st=5.25:d=0.3:alpha=1[ph0];"
+              f"[ph0][2:v]alphamerge[ph];[0:v][ph]overlay={p['x']}:{p['y']}:eof_action=pass:{en(2.9, 5.6)}[out]")
         frames_to_mp4(cards[("final", fmt)], os.path.join(OUT, f"06-final_{fmt}.mp4"),
-                      ["-ss", "0.15", "-t", "2.9", "-i", os.path.join(SRC, SOURCES["TB"]), "-loop", "1", "-i", mk], fc)
+                      ["-i", os.path.join(SRC, SOURCES["TB"]), "-loop", "1", "-i", mk], fc)
     for fmt in ("W", "V"):
         files = [os.path.join(OUT, f"01-hook_{fmt}.mp4")] + [os.path.join(OUT, f"{sc['id']}_{fmt}.mp4") for sc in SCENES] + \
                 [os.path.join(OUT, f"06-final_{fmt}.mp4")]
         lst = os.path.join(OUT, f"list_{fmt}.txt")
         open(lst, "w").write("".join(f"file '{f}'\n" for f in files))
         g = FMT[fmt]
-        args = ["-f", "concat", "-safe", "0", "-i", lst, "-i", AUDIO]
-        fc, cur, n = [], "[0:v]", 2
+        # склейка concat-фильтром: демуксер concat путал кадры на стыке сцен
+        args = sum((["-i", f] for f in files), []) + ["-i", AUDIO]
+        na = len(files)
+        fc = ["".join(f"[{i}:v]" for i in range(na)) + f"concat=n={na}:v=1:a=0,fps={FPS}[cat]"]
+        cur, n = "[cat]", na + 1
         for k, (a, b, txt) in enumerate(SUBS):
             args += ["-i", os.path.join(OUT, f"sub_{fmt}_{k:02d}.png")]
             fc.append(f"{cur}[{n}:v]overlay={g['sub']['x']}:{g['sub']['y']}:{en(a, b)}[v{k}]"); cur = f"[v{k}]"; n += 1
         args += ["-i", os.path.join(OUT, f"sound_{fmt}.png")]
         sx, sy = (1920 - 300 - 60, 40) if fmt == "W" else (1080 - 300 - 50, 130)
         fc.append(f"{cur}[{n}:v]overlay={sx}:{sy}:{en(0.2, 2.2)},format=yuv420p[vout]")
-        fc.append(f"[1:a]apad=whole_dur={TOTAL:.3f},aresample=48000[aout]")
+        fc.append(f"[{na}:a]apad=whole_dur={TOTAL:.3f},aresample=48000[aout]")
         name = f"knopka-korotko-озвучка-{g['cw']}x{g['ch']}.mp4"
         subprocess.run(["ffmpeg", "-v", "error", "-y"] + args + ["-filter_complex", ";".join(fc), "-map", "[vout]", "-map", "[aout]",
                         "-t", f"{TOTAL:.3f}", "-r", str(FPS), "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",

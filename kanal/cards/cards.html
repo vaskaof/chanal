@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<link rel="stylesheet" href="node_modules/@fontsource/unbounded/700.css">
+<link rel="stylesheet" href="node_modules/@fontsource/unbounded/800.css">
+<link rel="stylesheet" href="node_modules/@fontsource/manrope/500.css">
+<link rel="stylesheet" href="node_modules/@fontsource/manrope/600.css">
+<link rel="stylesheet" href="node_modules/@fontsource/manrope/700.css">
+<link rel="stylesheet" href="node_modules/@fontsource/manrope/800.css">
+<style>
+:root{--ink:#14202B;--ink2:#1E2C39;--ink3:#2F4456;--paper:#F6F4EF;--sand:#ECE8E0;--card:#FFFDFA;--line:#E4DED3;--or:#FF6B3D;--or2:#C2441E;--orl:#FFE3D8;--mut:#5A6470;--mutd:#C9D1D9;--mutd2:#8A96A3;--green:#1F7A4D;--red:#B3261E}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#999;font-family:'Manrope',sans-serif;color:var(--ink)}
+.card{width:1080px;height:1350px;position:relative;overflow:hidden;padding:96px 80px 120px;display:flex;flex-direction:column;gap:40px;margin-bottom:40px}
+.dark{background:var(--ink);color:var(--paper)} .paper{background:var(--paper)} .sand{background:var(--sand)} .orange{background:var(--or)}
+.top{position:absolute;left:80px;right:80px;top:40px;display:flex;justify-content:space-between;font-size:26px;font-weight:700;letter-spacing:1px}
+.top .b{font-family:'Unbounded';font-weight:700}
+.dark .top{color:var(--mutd2)} .paper .top,.sand .top{color:var(--mut)}
+.foot{position:absolute;left:80px;right:80px;bottom:48px;font-size:26px;color:var(--mut);display:flex;justify-content:space-between}
+.dark .foot{color:var(--mutd2)}
+.eyebrow{font-size:28px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--or2)}
+.dark .eyebrow{color:var(--or)}
+h1{font-family:'Unbounded';font-weight:800;line-height:1.05}
+h2{font-family:'Unbounded';font-weight:700;font-size:68px;line-height:1.12}
+.lead{font-size:38px;line-height:1.35;font-weight:600}
+.pill{display:inline-block;border-radius:22px;font-weight:800;text-align:center}
+.bubble{border-radius:30px;padding:24px 30px;font-size:34px;line-height:1.35}
+.phone{background:var(--ink);border-radius:56px;padding:14px;box-shadow:0 30px 60px rgba(20,32,43,.28)}
+.screen{border-radius:44px;padding:30px 22px 22px;display:flex;flex-direction:column;gap:14px;height:100%}
+.chk{display:inline-flex;width:40px;height:40px;border-radius:50%;background:var(--green);align-items:center;justify-content:center;flex:none}
+</style></head><body>
+
+<!-- 1 COVER -->
+<div class="card dark" id="c01" style="justify-content:center">
+ <div class="top"><span class="b">Кнопка</span><span>01 / 10</span></div>
+ <div class="eyebrow">Для байеров и посредников в Telegram</div>
+ <h1 style="font-size:150px;color:var(--paper)">Кнопка</h1>
+ <p class="lead" style="font-size:46px;color:var(--mutd);font-weight:600">Бот вашего канала, который собирает брони и&nbsp;оплаты и&nbsp;показывает клиенту, где его заказ</p>
+ <div style="display:flex;flex-direction:column;gap:22px;margin-top:30px">
+  <div class="pill" style="background:var(--or);color:var(--ink);font-size:44px;padding:36px;box-shadow:0 24px 60px rgba(255,107,61,.35)">Забронировать · 37 из 50</div>
+  <div style="display:flex;gap:22px">
+   <div class="pill" style="flex:1;background:var(--ink3);color:var(--paper);font-size:34px;padding:28px">Я оплатил(а)</div>
+   <div class="pill" style="flex:1;background:var(--ink3);color:var(--paper);font-size:34px;padding:28px">Проверить продавца</div>
+  </div>
+ </div>
+ <div class="foot"><span>Василий Коровин</span><span style="color:var(--or);font-weight:800">Листайте →</span></div>
+</div>
+
+<!-- 2 PAINS -->
+<div class="card paper" id="c02">
+ <div class="top"><span class="b">Кнопка</span><span>02 / 10</span></div>
+ <h2 style="font-size:96px">Знакомо?</h2>
+ <div style="display:flex;flex-direction:column;gap:20px">
+  <div class="bubble" style="background:var(--card);border:2px solid var(--line);font-weight:600">Неделю собираю брони и предоплаты по&nbsp;комментариям и личке</div>
+  <div class="bubble" style="background:var(--card);border:2px solid var(--line);font-weight:600;margin-left:60px">Партия приехала — иду по списку и каждому пишу сумму за вес</div>
+  <div class="bubble" style="background:var(--card);border:2px solid var(--line);font-weight:600">Чек прислали месяц назад. Где он теперь?</div>
+  <div class="bubble" style="background:var(--card);border:2px solid var(--line);font-weight:600;margin-left:60px">«На каком этапе мой заказ?» — двадцать раз за день</div>
+  <div class="bubble" style="background:var(--card);border:2px solid var(--line);font-weight:600">Клиентка сменила ник — и чей теперь это заказ?</div>
+  <div class="bubble" style="background:var(--orl);border:2px solid #F5C3B0;font-weight:700;color:#8A2E12;margin-left:60px">Кто-то пишет моим клиентам от моего имени и просит перевести деньги</div>
+ </div>
+ <div class="foot"><span>Узнали хотя бы два пункта?</span><span style="color:var(--or2);font-weight:800">Дальше →</span></div>
+</div>
+
+<!-- 3 TIME -->
+<div class="card sand" id="c03">
+ <div class="top"><span class="b">Кнопка</span><span>03 / 10</span></div>
+ <div class="eyebrow">Если у вас 100 позиций в месяц</div>
+ <div style="display:flex;align-items:baseline;gap:28px"><h1 style="font-size:180px;color:var(--ink)">≈47</h1><span style="font-family:'Unbounded';font-weight:700;font-size:56px">часов</span></div>
+ <p class="lead" style="margin-top:-16px">в месяц уходит не на выкупы, а на переписку и таблицы. Это больше недели рабочего времени.</p>
+ <div style="display:flex;flex-direction:column;gap:26px;margin-top:10px" id="bars"></div>
+ <div class="foot" style="font-size:24px"><span>Оценка. На разборе пересчитаем на ваших цифрах</span></div>
+</div>
+
+<!-- 4 BEFORE / AFTER -->
+<div class="card paper" id="c04" style="padding:0;gap:0">
+ <div style="flex:1.15;background:#2A2F36;position:relative;padding:96px 80px 40px;overflow:hidden">
+  <div class="top" style="color:#8A96A3"><span class="b">Кнопка</span><span>04 / 10</span></div>
+  <div style="display:flex;justify-content:space-between;align-items:center">
+   <div class="eyebrow" style="color:#FF8A63">Сейчас</div>
+   <div class="pill" style="background:#E5484D;color:#fff;font-size:30px;padding:10px 24px;border-radius:30px">47 непрочитанных</div>
+  </div>
+  <div style="position:relative;height:520px;margin-top:20px">
+   <div class="bubble" style="position:absolute;left:0;top:10px;background:#3B424B;color:#E6E9ED;transform:rotate(-3deg)">бронь</div>
+   <div class="bubble" style="position:absolute;left:210px;top:40px;background:#3B424B;color:#E6E9ED;transform:rotate(2deg)">бронь!!</div>
+   <div class="bubble" style="position:absolute;right:0;top:0;background:#3B424B;color:#E6E9ED;transform:rotate(3deg)">+ ещё одну</div>
+   <div class="bubble" style="position:absolute;left:0;top:130px;background:#3B424B;color:#E6E9ED;transform:rotate(1deg)">а сколько с меня за вес?</div>
+   <div class="bubble" style="position:absolute;right:0;top:228px;background:#4A3A3A;color:#FFD9CF;transform:rotate(-2deg)">я переводила вчера, проверьте</div>
+   <div class="bubble" style="position:absolute;left:0;top:330px;background:#3B424B;color:#E6E9ED;transform:rotate(-2deg)">где моя посылка??</div>
+   <div class="bubble" style="position:absolute;right:20px;top:345px;background:#3B424B;color:#E6E9ED;transform:rotate(2deg)">я сменила ник, это я</div>
+   <div class="bubble" style="position:absolute;left:180px;top:445px;background:#3B424B;color:#E6E9ED;transform:rotate(-1deg)">чек скинула в личку</div>
+  </div>
+ </div>
+ <div style="flex:1;background:var(--paper);padding:48px 80px 120px;display:flex;flex-direction:column;gap:26px">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+   <div class="eyebrow">С Кнопкой</div>
+   <div class="pill" style="background:#DDEFE4;color:var(--green);font-size:30px;padding:10px 24px;border-radius:30px">Сколько должен — клиент видит сам</div>
+  </div>
+  <div style="background:var(--card);border-radius:30px;padding:32px;box-shadow:0 10px 30px rgba(20,32,43,.10);display:flex;flex-direction:column;gap:12px">
+   <p style="font-size:28px;color:var(--mut);font-weight:700">Бот канала · уведомление</p>
+   <p style="font-size:38px;font-weight:700;line-height:1.3">Партия приехала. К оплате за вес — 1 300 ₽</p>
+   <div style="display:flex;gap:16px;margin-top:8px"><div class="pill" style="flex:1;background:var(--or);font-size:32px;padding:20px">Я оплатил(а)</div></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;font-size:32px;font-weight:700;color:var(--green)"><span class="chk"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Оплата подтверждена, «Кто должен» обновился сам</div>
+ </div>
+</div>
+
+<!-- 5 SCREENS -->
+<div class="card sand" id="c05">
+ <div class="top"><span class="b">Кнопка</span><span>05 / 10</span></div>
+ <h2 style="font-size:56px">Клиент сам видит заказ и&nbsp;сумму.<br><span style="color:var(--or2)">Вы видите, кто сколько должен.</span></h2>
+ <div style="display:flex;gap:36px;flex:1">
+  <div style="flex:1;display:flex;flex-direction:column;gap:18px">
+   <p style="font-size:30px;font-weight:800;color:var(--mut);text-align:center">Экран клиента</p>
+   <div class="phone" style="flex:1"><div class="screen" style="background:var(--paper)">
+    <p style="font-size:30px;font-weight:800">Мои заказы</p>
+    <div style="background:var(--card);border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:10px">
+     <p style="font-size:24px;color:var(--mut)">Заказ № 2417</p>
+     <p style="font-size:28px;font-weight:700;line-height:1.25">Выкуп Mattel · № 3</p>
+     <p style="font-size:24px">В пути КЗ → РФ · 9 из 12</p>
+     <div style="height:14px;background:var(--line);border-radius:7px"><div style="width:75%;height:14px;background:var(--or);border-radius:7px"></div></div>
+     <p style="font-size:24px;color:var(--mut);margin-top:6px">К оплате сейчас — за вес</p>
+     <p style="font-family:'Unbounded';font-size:42px;font-weight:700">1 300 ₽</p>
+     <div class="pill" style="background:var(--or);font-size:28px;padding:18px">Я оплатил(а)</div>
+    </div>
+    <div style="background:var(--card);border-radius:24px;padding:18px 22px">
+     <p style="font-size:24px;color:var(--mut)">Заказ № 2398</p>
+     <p style="font-size:26px;font-weight:700;color:var(--green)">Получено, оплачено</p>
+    </div>
+   </div></div>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;gap:18px">
+   <p style="font-size:30px;font-weight:800;color:var(--mut);text-align:center">Ваш экран</p>
+   <div class="phone" style="flex:1"><div class="screen" style="background:var(--card)">
+    <p style="font-size:30px;font-weight:800">Кто должен</p>
+    <div class="pill" style="background:var(--orl);color:#8A2E12;font-size:24px;padding:10px 16px;border-radius:14px;text-align:left">3 клиента · 10 200 ₽</div>
+    <div style="display:flex;flex-direction:column">
+     <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:2px solid #EFEAE2"><div><p style="font-size:26px;font-weight:700">Соня</p><p style="font-size:24px;color:var(--mut)">вес</p></div><p style="font-size:26px;font-weight:700">2 400 ₽</p></div>
+     <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:2px solid #EFEAE2"><div><p style="font-size:26px;font-weight:700">Катя</p><p style="font-size:24px;color:var(--mut)">основная</p></div><p style="font-size:26px;font-weight:700">6 500 ₽</p></div>
+     <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:2px solid #EFEAE2"><div><p style="font-size:26px;font-weight:700">Алина</p><p style="font-size:24px;color:var(--mut)">доставка</p></div><p style="font-size:26px;font-weight:700">1 300 ₽</p></div>
+    </div>
+    <div style="background:var(--paper);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:8px;margin-top:auto">
+     <p style="font-size:24px;color:var(--mut)">Заявка на оплату · чек</p>
+     <p style="font-size:26px;font-weight:700">Катя · 6 500 ₽</p>
+     <div class="pill" style="background:var(--or);font-size:26px;padding:14px">Подтвердить</div>
+    </div>
+   </div></div>
+  </div>
+ </div>
+ <div class="foot"><span>Ничего не нужно устанавливать — всё внутри Telegram</span></div>
+</div>
+
+<!-- 6 BOOKING -->
+<div class="card paper" id="c06">
+ <div class="top"><span class="b">Кнопка</span><span>06 / 10</span></div>
+ <h2 style="font-size:58px">Большой выкуп — бронь кнопкой под постом</h2>
+ <p class="lead" style="font-size:34px;color:var(--mut);font-weight:600;margin-top:-10px">Релизы Mattel, выкупы с Amazon, предзаказы на десятки мест</p>
+ <div style="flex:none;border-radius:32px;box-shadow:0 24px 60px rgba(20,32,43,.18);overflow:hidden">
+  <div style="background:var(--card);padding:32px 36px;display:flex;flex-direction:column;gap:12px">
+   <p style="font-size:26px;font-weight:700;color:var(--mut)">Ваш канал</p>
+   <p style="font-size:36px;font-weight:800">Выкуп Mattel · открываем 28 ноября</p>
+   <p style="font-size:32px">50 мест · предоплата 2 000 ₽</p>
+   <p style="font-size:28px;color:var(--mut)">Бронь — кнопкой ниже, без комментариев</p>
+  </div>
+  <div style="background:var(--or);font-size:40px;font-weight:800;text-align:center;padding:30px">Забронировать · 37 из 50</div>
+ </div>
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+  <div style="background:var(--card);border:2px solid var(--line);border-radius:26px;padding:28px"><p style="font-size:32px;font-weight:800">С предоплатой</p><p style="font-size:28px;line-height:1.35;color:var(--mut);margin-top:8px">или без — решаете вы</p></div>
+  <div style="background:var(--card);border:2px solid var(--line);border-radius:26px;padding:28px"><p style="font-size:32px;font-weight:800">Лимит ставите вы</p><p style="font-size:28px;line-height:1.35;color:var(--mut);margin-top:8px">сверх лимита — очередь на бронь</p></div>
+  <div style="background:var(--card);border:2px solid var(--line);border-radius:26px;padding:28px"><p style="font-size:32px;font-weight:800">Не оплатили в срок</p><p style="font-size:28px;line-height:1.35;color:var(--mut);margin-top:8px">место переходит следующему в очереди</p></div>
+  <div style="background:var(--card);border:2px solid var(--line);border-radius:26px;padding:28px"><p style="font-size:32px;font-weight:800">Бронь = заказ</p><p style="font-size:28px;line-height:1.35;color:var(--mut);margin-top:8px">сразу с этапом оплаты</p></div>
+ </div>
+</div>
+
+<!-- 7 SELLER CHECK -->
+<div class="card dark" id="c07">
+ <div class="top"><span class="b">Кнопка</span><span>07 / 10</span></div>
+ <h2 style="font-size:58px;color:var(--paper)">Кнопка подсказывает, какому аккаунту можно доверять</h2>
+ <div style="background:var(--ink2);border-radius:36px;padding:32px;display:flex;flex-direction:column;gap:20px;flex:1">
+  <div class="pill" style="align-self:flex-end;background:var(--or);color:var(--ink);font-size:30px;padding:16px 28px;border-radius:20px">Проверить продавца</div>
+  <div class="bubble" style="align-self:flex-start;max-width:820px;background:var(--paper);color:var(--ink);font-size:30px;border-radius:30px 30px 30px 8px">Проверим, официальный ли это аккаунт. Выберите того, кто вам написал, или перешлите сюда его сообщение.</div>
+  <div class="bubble" style="align-self:flex-end;max-width:760px;background:var(--ink3);color:var(--paper);font-size:30px;border-radius:30px 30px 8px 30px"><span style="font-size:24px;color:#9FB0BF;font-weight:700">Переслано от @snop_dolls</span><br>Оплатите остаток 6 500 ₽ на карту…</div>
+  <div class="bubble" style="align-self:flex-start;max-width:860px;background:var(--paper);color:var(--ink);font-size:30px;border-radius:30px 30px 30px 8px"><b style="color:var(--red)">Осторожно:</b> @snop_dolls похож на официальный @shop_dolls, но это ДРУГОЙ аккаунт. Не переводите ему деньги.<br><br><span style="color:var(--mut)">Официальные аккаунты канала:</span><br>@shop_dolls — менеджер</div>
+  <div class="pill" style="align-self:flex-start;background:var(--ink3);color:var(--paper);font-size:28px;padding:14px 26px;border-radius:18px">Сообщить о мошеннике</div>
+ </div>
+ <div class="foot" style="font-size:24px"><span>В каждом счёте: «Реквизиты присылают только официальные аккаунты»</span></div>
+</div>
+
+<!-- 8 TECH ON US -->
+<div class="card paper" id="c08">
+ <div class="top"><span class="b">Кнопка</span><span>08 / 10</span></div>
+ <h2>Техника — на нас.<br><span style="color:var(--or2)">Вы ведёте заказы.</span></h2>
+ <div style="display:flex;gap:24px">
+  <div style="flex:1;background:var(--ink);color:var(--paper);border-radius:30px;padding:40px;display:flex;flex-direction:column;gap:22px">
+   <p style="font-family:'Unbounded';font-size:36px;font-weight:700;color:var(--or)">Мы</p>
+   <p style="font-size:36px;line-height:1.35">Сервер и обновления</p>
+   <p style="font-size:36px;line-height:1.35">Защита данных</p>
+   <p style="font-size:36px;line-height:1.35">Бот вашего канала с вашим названием</p>
+   <p style="font-size:36px;line-height:1.35">Настройка под ваш маршрут и правила оплаты</p>
+  </div>
+  <div style="flex:1;background:var(--card);border:2px solid var(--line);border-radius:30px;padding:40px;display:flex;flex-direction:column;gap:22px">
+   <p style="font-family:'Unbounded';font-size:36px;font-weight:700;color:var(--or2)">Вы</p>
+   <p style="font-size:36px;line-height:1.35">Ведёте заказы и выкупы</p>
+   <p style="font-size:36px;line-height:1.35">Говорите, что неудобно</p>
+   <p style="font-size:36px;line-height:1.35;font-weight:700">Мы улучшаем приложение каждую неделю — по отзывам тех, кто в нём работает</p>
+  </div>
+ </div>
+ <div style="background:var(--sand);border-radius:30px;padding:36px;display:flex;flex-direction:column;gap:14px">
+  <p style="font-size:28px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--mut)">Уже работают с Кнопкой</p>
+  <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+   <div class="pill" style="background:var(--card);font-size:36px;padding:18px 32px">Dream Doll</div>
+   <div class="pill" style="background:var(--card);font-size:36px;padding:18px 32px">limisteam</div>
+  </div>
+  <p style="font-size:36px;line-height:1.35"><b style="font-family:'Unbounded';font-size:40px">559</b> заказов уже прошли через Кнопку</p>
+ </div>
+</div>
+
+<!-- 9 PRICE -->
+<div class="card sand" id="c09" style="gap:24px">
+ <div class="top"><span class="b">Кнопка</span><span>09 / 10</span></div>
+ <h2 style="font-size:60px">Платите, когда зарабатываете</h2>
+ <p class="lead" style="font-size:32px;margin-top:-8px">Процент — только с оплат за товар и вашу комиссию. Вес и доставка не считаются.</p>
+ <div style="background:var(--ink);color:var(--paper);border-radius:28px;padding:30px 34px;display:flex;flex-direction:column;gap:10px">
+  <p style="font-size:30px;font-weight:800;color:var(--or)">Обязательно только минимум в месяц</p>
+  <p style="font-size:28px;line-height:1.38;color:var(--mutd)">Это обслуживание под ключ: аренда сервера, обновления, поддержка и новые функции. Заказов больше — платите процент, меньше — только минимум.</p>
+ </div>
+ <div style="display:flex;gap:14px">
+  <div style="flex:1;background:var(--card);border:2px solid var(--line);border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:6px"><p style="font-family:'Unbounded';font-size:28px;font-weight:700">Бот</p><p style="font-size:34px;font-weight:800">1%</p><p style="font-size:24px;line-height:1.3;white-space:nowrap">мин. 1 500 ₽/мес</p><p style="font-size:24px;color:var(--mut);line-height:1.3">старт 3 000 ₽</p></div>
+  <div style="flex:1;background:var(--card);border:2px solid var(--line);border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:6px"><p style="font-family:'Unbounded';font-size:28px;font-weight:700">Стандарт</p><p style="font-size:34px;font-weight:800">1,7%</p><p style="font-size:24px;line-height:1.3;white-space:nowrap">мин. 3 000 ₽/мес</p><p style="font-size:24px;color:var(--mut);line-height:1.3">старт 5 000 ₽</p></div>
+  <div style="flex:1;background:var(--or);border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:6px"><p style="font-family:'Unbounded';font-size:28px;font-weight:700">Про</p><p style="font-size:34px;font-weight:800">2%</p><p style="font-size:24px;line-height:1.3;white-space:nowrap">мин. 4 000 ₽/мес</p><p style="font-size:24px;line-height:1.3">старт 5 000 ₽</p><p style="font-size:24px;font-weight:800">+ 2 ч доработок</p></div>
+ </div>
+ <p style="font-size:26px;font-weight:700;color:var(--mut)">Старт (разово): бот вашего канала, настройка под ваш маршрут и оплаты, обучение команды. Первые 2 месяца — только процент, без минимума.</p>
+ <div style="border-top:2px dashed #C9C1B3;padding-top:22px;display:flex;flex-direction:column;gap:14px">
+  <p style="font-size:24px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--mut)">Для сравнения*</p>
+  <div style="display:flex;justify-content:space-between;gap:24px"><p style="font-size:26px;color:var(--mut);line-height:1.35;flex:1">Свой бот у фрилансера* — сервер и поломки на вас, развитие останавливается после сдачи</p><p style="font-size:26px;font-weight:800;color:var(--mut);white-space:nowrap">20–60 тыс. ₽</p></div>
+  <div style="display:flex;justify-content:space-between;gap:24px"><p style="font-size:26px;color:var(--mut);line-height:1.35;flex:1">Бот в агентстве* + поддержка 10–20 тыс. ₽ в месяц</p><p style="font-size:26px;font-weight:800;color:var(--mut);white-space:nowrap">80–300 тыс. ₽</p></div>
+ </div>
+ <div class="foot" style="font-size:22px"><span>* рыночные цены разработки ботов на заказ: bothelp.io, vc.ru, 2025–2026</span></div>
+</div>
+
+<!-- 10 ABOUT + NEXT -->
+<div class="card dark" id="c10">
+ <div class="top"><span class="b">Кнопка</span><span>10 / 10</span></div>
+ <div class="eyebrow">Кто делает Кнопку</div>
+ <h2 style="font-size:64px;color:var(--paper);margin-top:-16px">Василий Коровин</h2>
+ <p style="font-size:32px;line-height:1.4;color:var(--mutd)">Технический совладелец Dream Doll. Кнопка выросла из рабочего инструмента нашего менеджера и каждый день проверяется на живых заказах. Каждое обновление проходит 3 166 автотестов.</p>
+ <div style="background:var(--ink2);border-left:6px solid var(--or);border-radius:24px;padding:32px 36px;display:flex;flex-direction:column;gap:10px">
+  <p style="font-size:36px;font-weight:800">Ваша задача не похожа на чужую?</p>
+  <p style="font-size:30px;line-height:1.4;color:var(--mutd)">Разберу её и предложу решение: настройку, доработку или автоматизацию именно вашего процесса.</p>
+ </div>
+ <p style="font-size:28px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--or);margin-top:6px">Что дальше</p>
+ <div style="display:flex;flex-direction:column;gap:16px">
+  <div style="display:flex;gap:22px;align-items:center"><span style="font-family:'Unbounded';font-size:38px;font-weight:700;color:var(--or);width:50px">1</span><p style="font-size:32px;line-height:1.3">Попробуйте демо-бот — тариф глазами вашего клиента</p></div>
+  <div style="display:flex;gap:22px;align-items:center"><span style="font-family:'Unbounded';font-size:38px;font-weight:700;color:var(--or);width:50px">2</span><p style="font-size:32px;line-height:1.3">Заполните анкету аудита — 5 минут</p></div>
+  <div style="display:flex;gap:22px;align-items:center"><span style="font-family:'Unbounded';font-size:38px;font-weight:700;color:var(--or);width:50px">3</span><p style="font-size:32px;line-height:1.3">Получите разбор: где теряются время и деньги и как это решить</p></div>
+ </div>
+ <div class="foot"><span>Ссылки — в посте</span><span style="color:var(--or);font-weight:800">@vaskaof</span></div>
+</div>
+
+<script>
+const rows=[["Сбор оплат в личке",25,"100 позиций × 3 сообщения × 5 мин"],["Обновить статусы в таблице и канале",10,"100 позиций × 6 смен × 1 мин"],["Сверить, кто сколько должен",6,"по таблице и переводам"],["Найти заказы нужной стадии",4,"3 раза в неделю × 20 мин"],["Ответить «где мой заказ?»",2.5,"50 вопросов × 3 мин"]];
+const box=document.getElementById('bars');
+rows.forEach(([n,h,f],i)=>{const d=document.createElement('div');d.style.cssText='display:flex;flex-direction:column;gap:8px';
+d.innerHTML=`<div style="display:flex;justify-content:space-between;font-size:30px;font-weight:700"><span>${n}</span><span>${String(h).replace('.',',')} ч</span></div>
+<div style="height:30px;background:#DCD5C9;border-radius:15px"><div style="height:30px;width:${h/25*100}%;background:${i==0?'#FF6B3D':'#14202B'};border-radius:15px"></div></div>
+<div style="font-size:24px;color:#5A6470">${f}</div>`;box.appendChild(d)});
+</script>
+</body></html>

@@ -5,7 +5,7 @@ const opentype = require('opentype.js');
 const { chromium } = require('playwright');
 
 const OUT = path.resolve(process.argv[2]);
-const SLOGAN = ['Заказы, оплаты и брони — в одном месте,', 'а не в комментариях и заметках'];
+const SLOGAN = 'Убираем рутину из бизнеса';
 const C = { ink: '#14202B', ink3: '#2F4456', paper: '#F6F4EF', or: '#FF6B3D', or2: '#C2441E', mutd: '#C9D1D9' };
 
 const load = f => opentype.parse(fs.readFileSync(require.resolve('@fontsource/' + f)).buffer);
@@ -67,14 +67,14 @@ ${toggle({ x: 146, y: 150, w: 220, h: 88, track: C.or, knob: C.paper, spark: C.o
 
   // Горизонтальный логотип для обложек/шапок, со слоганом под названием
   'neruchnoy-wordmark': (() => {
-    const a = text('Неручной', 430, 222, 118), b = text('режим', 430, 362, 118);
-    const s1 = bodyText(SLOGAN[0], 434, 452, 40), s2 = bodyText(SLOGAN[1], 434, 508, 40);
-    const W = Math.ceil(430 + Math.max(a.w, b.w, s1.w, s2.w) + 110);
+    const a = text('Неручной', 430, 250, 118), b = text('режим', 430, 390, 118);
+    const s = bodyText(SLOGAN, 434, 484, 50);
+    const W = Math.ceil(430 + Math.max(a.w, b.w, s.w) + 110);
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} 640">${glowDef}
 <rect width="${W}" height="640" fill="${C.ink}"/>
 ${toggle({ x: 100, y: 268, w: 260, h: 104, track: C.or, knob: C.paper, spark: C.or, glow: true })}
 <path d="${a.d}" fill="${C.paper}"/><path d="${b.d}" fill="${C.or}"/>
-<path d="${s1.d}${s2.d}" fill="${C.mutd}"/></svg>`;
+<path d="${s.d}" fill="${C.mutd}"/></svg>`;
   })(),
 };
 
